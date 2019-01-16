@@ -5,11 +5,6 @@ from urllib.parse import urlparse
 
 from dotenv import load_dotenv
 
-load_dotenv()
-
-LOGIN = os.getenv('LOGIN')
-TOKEN = os.getenv('TOKEN')
-
 BASE_URL = 'https://api-ssl.bitly.com/v4/bitlinks'
 
 
@@ -21,7 +16,7 @@ def is_correct_link(url):
         return False
 
 
-def make_bitlink(url, token=TOKEN):
+def make_bitlink(url, token):
     headers = {'Authorization': 'Bearer {}'.format(token)}
     params = {'long_url': url}
 
@@ -33,7 +28,7 @@ def make_bitlink(url, token=TOKEN):
     return response.json()['link']
 
 
-def get_total_clicks(url, token=TOKEN):
+def get_total_clicks(url, token):
     headers = {'Authorization': 'Bearer {}'.format(token)}
     params = {'unit': 'day', 'units': -1}
     parsed_url = urlparse(url)
@@ -65,6 +60,9 @@ def get_link_from_sys_args():
 
 
 if __name__ == '__main__':
+    load_dotenv()
+    token = os.getenv('TOKEN')
+
     url = get_link_from_sys_args()
 
     if url is None:
@@ -74,9 +72,9 @@ if __name__ == '__main__':
     elif not is_correct_link(url):
         print('Ваша ссылка не работает')
     elif is_bitly(url):
-        total_clicks = get_total_clicks(url)
+        total_clicks = get_total_clicks(url, token)
         print('Количество кликов по ссылке {} равно {}.'.format(url, total_clicks))
 
     else:
-        bitlink = make_bitlink(url)
+        bitlink = make_bitlink(url, token)
         print('Короткая ссылка:', bitlink)
