@@ -16,6 +16,8 @@ def is_correct_link(url):
         return False
     except requests.exceptions.MissingSchema:
         return False
+    except requests.exceptions.InvalidSchema:
+        return False
 
 
 def make_bitlink(url, token):
