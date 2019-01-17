@@ -12,7 +12,9 @@ def is_correct_link(url):
     try:
         response = requests.get(url)
         return response.ok
-    except:
+    except requests.exceptions.ConnectionError:
+        return False
+    except requests.exceptions.MissingSchema:
         return False
 
 
